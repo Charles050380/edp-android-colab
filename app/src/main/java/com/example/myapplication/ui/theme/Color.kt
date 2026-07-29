@@ -2,10 +2,18 @@ package com.example.myapplication.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Liceo de Cagayan University inspired colors
+val PrimaryRed = Color(0xFF771C1B)
+val PrimaryLight = Color(0xFFAB4946)
+val PrimaryDark = Color(0xFF460000)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val SecondaryGold = Color(0xFFD4AF37)
+val OnSecondaryGold = Color(0xFF000000)
+
+val LightBackground = Color(0xFFFFFBFF)
+val LightSurface = Color(0xFFFFFBFF)
+val LightOnSurface = Color(0xFF201A1A)
+
+val DarkBackground = Color(0xFF201A1A)
+val DarkSurface = Color(0xFF201A1A)
+val DarkOnSurface = Color(0xFFECE0DF)

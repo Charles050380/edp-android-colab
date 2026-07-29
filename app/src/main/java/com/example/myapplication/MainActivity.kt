@@ -3,22 +3,23 @@ package com.example.myapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,23 +27,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.myapplication.ui.theme.MyApplicationTheme
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.draw.blur
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.CameraAlt
+import com.example.myapplication.ui.theme.ProfileCardLabTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyApplicationTheme {
-                Surface(color = MaterialTheme.colorScheme.background) {
-                    BusinessCard()
+            ProfileCardLabTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    ProfileScreen()
                 }
             }
         }
@@ -50,230 +46,232 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun BusinessCard() {
-    val isDark = isSystemInDarkTheme()
-    val glassColor = if (isDark) Color.Black.copy(alpha = 0.5f) else Color.White.copy(alpha = 0.4f)
-    val textColor = Color.White
-    val secondaryTextColor = Color.White.copy(alpha = 0.8f)
-    val buttonBlue = Color(0xFF1976D2)
-
+fun ProfileScreen() {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
-        // Background Image
-        Image(
-            painter = painterResource(R.drawable.background_nature),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
 
-        // Dark Overlay for readability
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.4f))
+                .fillMaxWidth()
+                .height(280.dp)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                            MaterialTheme.colorScheme.background
+                        )
+                    )
+                )
         )
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+                .padding(top = 160.dp, bottom = 40.dp)
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(40.dp))
 
-            // Profile Image (Rounded Square like in the image)
-            Image(
-                painter = painterResource(R.drawable.navarez_photo),
-                contentDescription = "Profile Photo",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(140.dp)
-                    .clip(RoundedCornerShape(24.dp))
-                    .border(2.dp, Color.White.copy(alpha = 0.3f), RoundedCornerShape(24.dp))
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Charles David A. Navarez",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = textColor
-                )
-            )
-
-            Text(
-                text = "BSIT Student • Digital Creator",
-                style = MaterialTheme.typography.bodyLarge,
-                color = secondaryTextColor
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Glassmorphism Contact & Bio Container
             Surface(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .graphicsLayer {
-                        clip = true
-                        shape = RoundedCornerShape(28.dp)
-                    },
-                color = glassColor,
-                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.2f))
+                    .size(160.dp)
+                    .clip(CircleShape)
+                    .border(6.dp, MaterialTheme.colorScheme.surface, CircleShape),
+                shadowElevation = 16.dp,
+                shape = CircleShape
             ) {
-                Column(
-                    modifier = Modifier.padding(20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "Contact Information",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = secondaryTextColor,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
-
-                    ContactRowGlass(
-                        icon = Icons.Default.Email,
-                        label = "cdnavarez29386@liceo.edu.ph"
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    ContactRowGlass(
-                        icon = Icons.Default.Phone,
-                        label = "+63 912 345 6789"
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Text(
-                        text = "\"Hi, I'm Charles — a creative BSIT student who loves turning ideas into engaging, user-friendly designs.\"",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontStyle = FontStyle.Italic,
-                            lineHeight = 20.sp
-                        ),
-                        color = textColor
+                    Image(
+                        painter = painterResource(id = R.drawable.navarez_photo),
+                        contentDescription = "Profile Picture",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(4.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            // Social Buttons
-            ActionButton(
-                title = "My Website",
-                subtitle = "Check out my portfolio",
-                icon = Icons.Default.Language,
-                backgroundColor = buttonBlue
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            ActionButton(
-                title = "Instagram",
-                subtitle = "Follow me on Instagram",
-                icon = Icons.Default.CameraAlt,
-                backgroundColor = buttonBlue
-            )
-        }
-    }
-}
-
-@Composable
-fun ContactRowGlass(icon: ImageVector, label: String) {
-    Surface(
-        color = Color.White.copy(alpha = 0.1f),
-        shape = RoundedCornerShape(12.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(20.dp)
-            )
-            Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = label,
-                color = Color.White,
-                style = MaterialTheme.typography.bodyMedium
+                text = "Charles David A. Navarez",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center
             )
+
+            Text(
+                text = "BSIT 3-2 Student",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 1.2.sp,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+
+
+            Text(
+                text = "We love Sir Razo, because Sir Razo loves us.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(vertical = 16.dp, horizontal = 12.dp)
+            )
+
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(28.dp)
+                    ),
+                shape = RoundedCornerShape(28.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "CONTACT INFO",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            letterSpacing = 1.sp
+                        )
+                        Icon(
+                            imageVector = Icons.Default.Info,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    InfoRow(
+                        icon = Icons.Default.Person,
+                        label = "Full Name",
+                        value = "Charles David A. Navarez"
+                    )
+                    InfoRow(
+                        icon = Icons.Default.Class,
+                        label = "Section",
+                        value = "BSIT 3-2"
+                    )
+                    InfoRow(
+                        icon = Icons.Default.School,
+                        label = "Course",
+                        value = "Bachelor of Science in Information Technology"
+                    )
+                    InfoRow(
+                        icon = Icons.Default.Phone,
+                        label = "Mobile Number",
+                        value = "09491105753"
+                    )
+                    InfoRow(
+                        icon = Icons.Default.Email,
+                        label = "Email Address",
+                        value = "cdnavarez29386@liceo.edu.ph"
+                    )
+                }
+            }
         }
     }
 }
 
+
 @Composable
-fun ActionButton(
-    title: String,
-    subtitle: String,
+fun InfoRow(
     icon: ImageVector,
-    backgroundColor: Color
+    label: String,
+    value: String
 ) {
-    Surface(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { },
-        color = backgroundColor,
-        shape = RoundedCornerShape(16.dp)
+            .padding(vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Surface(
+            modifier = Modifier.size(44.dp),
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
         ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(Color.White.copy(alpha = 0.2f), RoundedCornerShape(8.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(imageVector = icon, contentDescription = null, tint = Color.White)
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = label,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(22.dp)
+                )
             }
+        }
 
-            Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(16.dp))
 
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = title, fontWeight = FontWeight.Bold, color = Color.White)
-                Text(text = subtitle, style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.7f))
-            }
-
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(20.dp)
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = label.uppercase(),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.secondary,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.5.sp
+            )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Medium
             )
         }
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Profile - Light")
 @Composable
-fun BusinessCardPreview() {
-    MyApplicationTheme {
-        BusinessCard()
+fun ProfileLightPreview() {
+    ProfileCardLabTheme {
+        Surface {
+            ProfileScreen()
+        }
     }
 }
 
-@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
+    name = "Profile - Dark"
+)
 @Composable
-fun BusinessCardDarkPreview() {
-    MyApplicationTheme {
-        BusinessCard()
-    }
-}
-
-@Preview(showBackground = true, fontScale = 1.5f, name = "Large Font")
-@Composable
-fun BusinessCardLargeFontPreview() {
-    MyApplicationTheme {
-        BusinessCard()
+fun ProfileDarkPreview() {
+    ProfileCardLabTheme {
+        Surface {
+            ProfileScreen()
+        }
     }
 }

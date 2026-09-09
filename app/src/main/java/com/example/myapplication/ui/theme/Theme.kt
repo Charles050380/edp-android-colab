@@ -9,18 +9,27 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.myapplication.data.ThemeRepository
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = androidx.compose.ui.graphics.Color(0xFFD0BCFF),
+    secondary = androidx.compose.ui.graphics.Color(0xFFCCC2DC),
+    tertiary = androidx.compose.ui.graphics.Color(0xFFEFB8C8)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = androidx.compose.ui.graphics.Color(0xFF6650a4),
+    secondary = androidx.compose.ui.graphics.Color(0xFF625b71),
+    tertiary = androidx.compose.ui.graphics.Color(0xFF7D5260)
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -49,10 +58,34 @@ fun MyApplicationTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = colorScheme.primary.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+        }
+    }
 
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
         content = content
     )
+}
+
+class ThemeViewModel(private val repo: ThemeRepository) : ViewModel() {
+
+    val isDarkTheme: StateFlow<Boolean> = repo.observeDarkTheme(
+        scope = viewModelScope,
+        started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5_000),
+        initialValue = false
+    )
+
+    // TODO 10: save the user's theme choice
+    fun setDarkTheme(dark: Boolean) {
+        viewModelScope.launch {
+            repo.setDarkTheme(dark)
+        }
+    }
 }
